@@ -27,3 +27,9 @@ export function getSupabasePublishableKey(): string {
 export function isLlmMockEnabled(): boolean {
   return process.env.LLM_MOCK === "true";
 }
+
+/** Preferência: GEMINI_API_KEY; fallback: LLM_API_KEY. */
+export function getGeminiApiKey(): string | undefined {
+  const key = process.env.GEMINI_API_KEY ?? process.env.LLM_API_KEY;
+  return key?.trim() || undefined;
+}

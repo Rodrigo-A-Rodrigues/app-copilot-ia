@@ -1,4 +1,4 @@
-import { isLlmMockEnabled } from "@/lib/env";
+import { getGeminiApiKey, isLlmMockEnabled } from "@/lib/env";
 import {
   buildMockResult,
   buildSystemPrompt,
@@ -14,73 +14,89 @@ type GenerateTextInput = {
   toneGuidelines: string | null;
 };
 
-type ChatCompletionResponse = {
-  choices?: Array<{
-    message?: {
-      content?: string | null;
+type GeminiGenerateResponse = {
+  candidates?: Array<{
+    content?: {
+      parts?: Array<{
+        text?: string;
+      }>;
     };
+    finishReason?: string;
   }>;
   error?: {
     message?: string;
+    status?: string;
   };
 };
 
 export async function generateCorporateText(
   input: GenerateTextInput,
 ): Promise<string> {
-  if (isLlmMockEnabled() || !process.env.LLM_API_KEY) {
-    if (!process.env.LLM_API_KEY && !isLlmMockEnabled()) {
-      // Sem chave e sem mock explícito: ainda assim devolve mock em dev
-      // para não bloquear o protótipo; loga aviso no servidor.
+  const apiKey = getGeminiApiKey();
+
+  if (isLlmMockEnabled() || !apiKey) {
+    if (!apiKey && !isLlmMockEnabled()) {
       console.warn(
-        "[llm] LLM_API_KEY ausente — usando geração mock. Defina LLM_MOCK=true ou configure a chave.",
+        "[llm] GEMINI_API_KEY/LLM_API_KEY ausente — usando geração mock. Defina LLM_MOCK=true ou configure a chave do Gemini.",
       );
     }
     return buildMockResult(input);
   }
 
-  const baseUrl = (process.env.LLM_BASE_URL ?? "https://api.openai.com/v1").replace(
-    /\/$/,
-    "",
-  );
-  const model = process.env.LLM_MODEL ?? "gpt-4o-mini";
+  // Free tier atual para novos usuários: preferir 3.1 Flash-Lite / 3.x Flash.
+  // Modelos "Live" / Native Audio NÃO servem para generateContent de texto.
+  const model = process.env.LLM_MODEL ?? "gemini-3.1-flash-lite";
+  const baseUrl = (
+    process.env.LLM_BASE_URL ??
+    "https://generativelanguage.googleapis.com/v1beta"
+  ).replace(/\/$/, "");
 
-  const response = await fetch(`${baseUrl}/chat/completions`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.LLM_API_KEY}`,
-    },
-    body: JSON.stringify({
-      model,
-      temperature: 0.4,
-      messages: [
-        {
-          role: "system",
-          content: buildSystemPrompt({
-            companyName: input.companyName,
-            toneGuidelines: input.toneGuidelines,
-          }),
-        },
-        {
-          role: "user",
-          content: buildUserPrompt(input),
-        },
-      ],
-    }),
+  const systemPrompt = buildSystemPrompt({
+    companyName: input.companyName,
+    toneGuidelines: input.toneGuidelines,
   });
+  const userPrompt = buildUserPrompt(input);
 
-  const data = (await response.json()) as ChatCompletionResponse;
+  const response = await fetch(
+    `${baseUrl}/models/${model}:generateContent`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-goog-api-key": apiKey,
+      },
+      body: JSON.stringify({
+        systemInstruction: {
+          parts: [{ text: systemPrompt }],
+        },
+        contents: [
+          {
+            role: "user",
+            parts: [{ text: userPrompt }],
+          },
+        ],
+        generationConfig: {
+          temperature: 0.4,
+        },
+      }),
+    },
+  );
+
+  const data = (await response.json()) as GeminiGenerateResponse;
 
   if (!response.ok) {
     throw new Error(
-      data.error?.message ?? `Falha na API do LLM (HTTP ${response.status})`,
+      data.error?.message ?? `Falha na API do Gemini (HTTP ${response.status})`,
     );
   }
 
-  const content = data.choices?.[0]?.message?.content?.trim();
+  const content = data.candidates?.[0]?.content?.parts
+    ?.map((part) => part.text ?? "")
+    .join("")
+    .trim();
+
   if (!content) {
-    throw new Error("A API do LLM retornou uma resposta vazia.");
+    throw new Error("A API do Gemini retornou uma resposta vazia.");
   }
 
   return content;

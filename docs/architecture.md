@@ -9,7 +9,7 @@ Alinha-se à resolução descrita em [desafio.md](./desafio.md).
 
 O sistema é um assistente web que gera mensagens corporativas a partir de inputs
 simples (tipo de texto, tópicos e tom de voz), usando LLM com prompt engineering.
-Canais de e-mail e WhatsApp, orquestrados pelo N8N, entram como entrega opcional
+Canais de e-mail e WhatsApp, orquestrados pelo Make, entram como entrega opcional
 e como módulo complementar de triagem.
 
 ```mermaid
@@ -25,7 +25,7 @@ flowchart LR
   end
 
   subgraph automation [Automações]
-    N8N[N8N]
+    Make[Make]
     Mail[E-mail]
     WA[WhatsApp]
   end
@@ -33,10 +33,10 @@ flowchart LR
   UI --> API
   API --> SB
   API --> LLM
-  UI -->|aprovar / enviar| N8N
-  N8N --> Mail
-  N8N --> WA
-  Mail -->|fluxo complementar| N8N
+  UI -->|aprovar / enviar| Make
+  Make --> Mail
+  Make --> WA
+  Mail -->|fluxo complementar| Make
 ```
 
 ---
@@ -46,8 +46,8 @@ flowchart LR
 | Objetivo | Como atendemos |
 |---|---|
 | Resolver o enunciado (assistente de escrita) | Fluxo principal centrado em geração com LLM |
-| Manter o protótipo acessível | Next.js + Supabase + N8N, sem infraestrutura pesada |
-| Separar núcleo e diferencial | Geração no app; envio/triagem no N8N |
+| Manter o protótipo acessível | Next.js + Supabase + Make, sem infraestrutura pesada |
+| Separar núcleo e diferencial | Geração no app; envio/triagem no Make |
 | Identidade organizacional | System prompt + dados de perfil/empresa no Supabase |
 | Segurança básica | Rotas protegidas, auth Supabase, chaves só no servidor |
 
@@ -60,8 +60,8 @@ flowchart LR
 | Frontend | Next.js (App Router) + TypeScript + Tailwind v4 | UI do assistente, dashboard, auth |
 | UI / formulários | shadcn/ui + React Hook Form + Zod | Componentes, validação e estado de forms |
 | Auth / dados | Supabase | Login, sessão, perfil, histórico de gerações |
-| IA | API de LLM (ex.: OpenAI / Gemini) | Geração de textos via prompts |
-| Orquestração | N8N | Webhooks de envio e monitoramento de e-mail |
+| IA | Google Gemini API | Geração de textos via prompts |
+| Orquestração | Make | Webhooks de envio e monitoramento de e-mail |
 | Canais | E-mail + WhatsApp | Entrega do texto ou alerta de triagem |
 
 ---
@@ -89,7 +89,7 @@ src/
   lib/
     supabase/             # client, server, middleware (a criar)
     prompts/              # templates de system/user prompt (a criar)
-    n8n/                  # helpers de webhook (a criar)
+    make/                 # helpers de webhook Make.com
   types/                  # tipos de domínio (a criar)
 docs/
   desafio.md
@@ -125,7 +125,7 @@ Saídas na UI:
 
 - Visualizar / editar rascunho
 - Copiar
-- (Opcional) Enviar via N8N (e-mail ou WhatsApp)
+- (Opcional) Enviar via Make (e-mail ou WhatsApp)
 
 ### 5.3 Identidade organizacional
 
@@ -144,21 +144,21 @@ Podem viver em tabela de perfil/configuração no Supabase e/ou em templates em
 - Últimas gerações
 - (Fase 2) status do monitor de e-mails
 
-### 5.5 Automações N8N
+### 5.5 Automações Make
 
 **Entrega (pós-aprovação):**
 
 ```
-Webhook Next.js → N8N → E-mail e/ou WhatsApp
+Webhook Next.js → Make → E-mail e/ou WhatsApp
 ```
 
 **Triagem (complementar):**
 
 ```
-E-mail inbound → N8N → resumo com LLM → WhatsApp ao responsável
+E-mail inbound → Make → resumo com LLM → WhatsApp ao responsável
 ```
 
-O N8N não substitui o assistente; apenas orquestra canais externos.
+O Make não substitui o assistente; apenas orquestra canais externos.
 
 ---
 
@@ -190,13 +190,13 @@ sequenceDiagram
 sequenceDiagram
   actor U as Usuário
   participant UI as Next.js UI
-  participant N8N as N8N
+  participant Make as Make
   participant C as Canal (E-mail/WhatsApp)
 
   U->>UI: aprova envio
-  UI->>N8N: webhook (texto + canal + destinatário)
-  N8N->>C: dispara mensagem
-  N8N-->>UI: status (sucesso/erro)
+  UI->>Make: webhook (texto + canal + destinatário)
+  Make->>C: dispara mensagem
+  Make-->>UI: status (sucesso/erro)
 ```
 
 ### 6.3 Triagem de e-mail (fase 2)
@@ -204,14 +204,14 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
   participant M as Caixa de e-mail
-  participant N8N as N8N
+  participant Make as Make
   participant LLM as LLM API
   participant WA as WhatsApp
 
-  M->>N8N: novo e-mail
-  N8N->>LLM: resume conteúdo
-  LLM-->>N8N: resumo
-  N8N->>WA: notifica responsável
+  M->>Make: novo e-mail
+  Make->>LLM: resume conteúdo
+  LLM-->>Make: resumo
+  Make->>WA: notifica responsável
 ```
 
 ---
@@ -269,7 +269,7 @@ Políticas RLS: cada usuário lê/escreve apenas seus registros.
 |---|---|---|
 | `POST` | `/api/generate` | Gera texto com LLM e persiste histórico |
 | `GET` | `/api/generations` | Lista histórico do usuário |
-| `POST` | `/api/send` | Dispara webhook N8N após aprovação |
+| `POST` | `/api/send` | Dispara webhook Make após aprovação |
 
 Contratos detalhados podem evoluir junto com a implementação.
 
@@ -277,7 +277,7 @@ Contratos detalhados podem evoluir junto com a implementação.
 
 ## 10. Segurança e segredos
 
-- Chaves de LLM, Supabase service role e webhooks N8N apenas em variáveis de
+- Chaves de LLM, Supabase service role e webhooks Make apenas em variáveis de
   ambiente no servidor.
 - Cliente browser usa apenas chave anônima do Supabase + sessão do usuário.
 - Validar sessão em Route Handlers antes de gerar ou enviar.
@@ -292,16 +292,16 @@ NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 # ou NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
 
-LLM_API_KEY=
-LLM_MODEL=gpt-4o-mini
-LLM_BASE_URL=https://api.openai.com/v1
+GEMINI_API_KEY=
+LLM_MODEL=gemini-3.1-flash-lite
+LLM_BASE_URL=https://generativelanguage.googleapis.com/v1beta
 LLM_MOCK=false
 
-N8N_WEBHOOK_SEND_URL=
-N8N_WEBHOOK_SECRET=
+MAKE_WEBHOOK_SEND_URL=
+MAKE_WEBHOOK_SECRET=
 ```
 
-Veja também `.env.example` e o SQL em `supabase/schema.sql`.
+Veja também `.env.example`, `docs/make/scenario.md` e o SQL em `docs/supabase/schema.sql`.
 
 ---
 
@@ -313,7 +313,7 @@ Veja também `.env.example` e o SQL em `supabase/schema.sql`.
 | Assistente com 4 tipos de texto | Templates avançados e bibliotecas |
 | Histórico de gerações | Analytics de uso |
 | Copiar texto | Fila de aprovação formal |
-| Webhook N8N de envio (se houver tempo) | Monitor e-mail → resumo → WhatsApp |
+| Webhook Make de envio (e-mail/WhatsApp) | Monitor e-mail → resumo → WhatsApp |
 | Prompt versionado em código | Fine-tuning / avaliação automática de qualidade |
 
 ---
@@ -322,8 +322,7 @@ Veja também `.env.example` e o SQL em `supabase/schema.sql`.
 
 1. **Assistente no centro** — o desafio exige geração a partir de inputs; canais
    externos são periféricos.
-2. **N8N em vez de Make/Zapier** — mesma ideia de automação low-code pedida no
-   enunciado, alinhada à stack do time.
+2. **Make.com** — automação low-code citada no enunciado; o app só dispara o webhook.
 3. **LLM só no servidor** — simplifica segurança e controle de custo/prompt.
 4. **Supabase como BaaS** — evita backend monolítico no protótipo acadêmico.
 5. **Triagem de e-mail como diferencial** — agrega valor de RH sem desviar do MVP.
@@ -336,5 +335,5 @@ Veja também `.env.example` e o SQL em `supabase/schema.sql`.
 2. Implementar guard de sessão no layout `(protected)`.
 3. Construir UI do `/assistant` e Route Handler `/api/generate`.
 4. Versionar prompts e testar 2–3 tipos de texto na demo.
-5. Integrar webhook N8N de envio (e-mail/WhatsApp).
-6. (Opcional) Workflow complementar de triagem de e-mail.
+5. Configurar scenario Make (docs/make/scenario.md) e testar `/api/send`.
+6. (Opcional) Workflow complementar de triagem de e-mail no Make.

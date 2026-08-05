@@ -30,12 +30,10 @@ identidade da empresa.
 
 ### Abordagem
 
-Invertemos a prioridade em relação a uma automação só de alertas:
-
-1. **Núcleo (MVP do desafio):** copiloto de geração de textos corporativos com LLM e
-   prompt engineering.
-2. **Complemento (diferencial):** automações de entrega e triagem via N8N
-   (e-mail / WhatsApp).
+1. **Núcleo (MVP do desafio):** copiloto de geração de textos corporativos com LLM
+   (Gemini) e prompt engineering.
+2. **Complemento (alinhado ao enunciado):** entrega automatizada via **Make.com**
+   (e-mail / WhatsApp), sem programação complexa na orquestração.
 
 ### Stack escolhida
 
@@ -43,53 +41,45 @@ Invertemos a prioridade em relação a uma automação só de alertas:
 |---|---|
 | **Next.js + TypeScript** | Aplicação web do assistente (UI, fluxos protegidos) |
 | **Supabase** | Autenticação, perfil, histórico de gerações e identidade organizacional |
-| **LLM (API)** | Geração de textos a partir de prompts estruturados |
-| **N8N** | Orquestração de envios e automações secundárias |
-| **E-mail** | Canal de saída do texto gerado e/ou monitoramento de entrada |
-| **WhatsApp** | Canal de saída do texto gerado e/ou alerta ao responsável |
+| **Google Gemini** | Geração de textos a partir de prompts estruturados |
+| **Make.com** | Orquestração low-code de envios (e-mail / WhatsApp) |
+| **E-mail** | Canal de saída do texto gerado |
+| **WhatsApp** | Canal de saída do texto gerado |
 
 ### Fluxo principal (atende o enunciado)
 
 ```
 Usuário informa: tipo de texto + tópicos/contexto + tom de voz
         ↓
-Next.js envia a solicitação ao LLM (com system prompt da empresa)
+Next.js envia a solicitação ao Gemini (com system prompt da empresa)
         ↓
 Assistente gera mensagem corporativa (e-mail, WhatsApp, aviso ou resumo)
         ↓
-Usuário revisa, copia ou aprova
+Usuário revisa, copia ou aprova o envio
         ↓
-(Opcional) N8N dispara envio por e-mail ou WhatsApp
+Make recebe webhook e dispara e-mail ou WhatsApp
 ```
 
-### Fluxo complementar (diferencial)
+### Fluxo complementar (diferencial / fase 2)
 
 ```
 E-mail chega na caixa monitorada
         ↓
-N8N processa e resume com LLM
+Make processa / resume
         ↓
-WhatsApp da empresa notifica o responsável com o resumo
+WhatsApp notifica o responsável com o resumo
 ```
-
-Esse segundo fluxo **não substitui** o assistente de escrita; apenas reduz a carga de
-triagem da caixa de entrada.
 
 ### Escopo mínimo de entrega
 
 - Tela do assistente com inputs: tipo de texto, tópicos e tom de voz
-- Geração via LLM com prompt engineering documentado (persona RH / identidade)
+- Geração via Gemini com prompt engineering documentado
 - Autenticação e histórico básico no Supabase
-- Ações: copiar texto e, se houver tempo, enviar via N8N
+- Copiar texto + enviar via Make (e-mail ou WhatsApp)
 - Demo cobrindo pelo menos 2–3 tipos de mensagem corporativa
-
-### Fora do núcleo (fase 2)
-
-- Monitoramento contínuo de e-mails com alerta no WhatsApp
-- Filas de aprovação, templates avançados e multi-empresa
 
 ### Critério de sucesso
 
 A solução resolve o desafio quando um colaborador consegue, com poucos inputs,
 obter um texto corporativo coerente, bem escrito e alinhado à identidade
-organizacional — e, opcionalmente, encaminhá-lo pelos canais oficiais da empresa.
+organizacional — e, opcionalmente, encaminhá-lo pelos canais oficiais via Make.

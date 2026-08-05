@@ -29,6 +29,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { SendViaMakeForm } from "@/components/send-via-make-form";
 import {
   generateSchema,
   type GenerateValues,
@@ -38,11 +39,17 @@ import {
   TEXT_TYPES,
   TONE_LABELS,
   TONES,
+  type TextType,
+  type Tone,
 } from "@/types/domain";
 
 export function AssistantForm() {
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
+  const [lastMeta, setLastMeta] = useState<{
+    textType: TextType;
+    tone: Tone;
+  }>({ textType: "email", tone: "formal" });
 
   const form = useForm<GenerateValues>({
     resolver: zodResolver(generateSchema),
@@ -72,6 +79,7 @@ export function AssistantForm() {
       }
 
       setResult(data.result);
+      setLastMeta({ textType: values.textType, tone: values.tone });
       toast.success("Mensagem gerada. Revise antes de usar.");
     } catch {
       toast.error("Falha de rede ao gerar o texto.");
@@ -215,11 +223,18 @@ export function AssistantForm() {
             </Button>
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
           {result ? (
-            <pre className="min-h-72 whitespace-pre-wrap rounded-lg bg-primary/5 p-4 text-sm leading-relaxed text-foreground ring-1 ring-primary/10">
-              {result}
-            </pre>
+            <>
+              <pre className="min-h-56 whitespace-pre-wrap rounded-lg bg-primary/5 p-4 text-sm leading-relaxed text-foreground ring-1 ring-primary/10">
+                {result}
+              </pre>
+              <SendViaMakeForm
+                message={result}
+                textType={lastMeta.textType}
+                tone={lastMeta.tone}
+              />
+            </>
           ) : (
             <div className="flex min-h-72 items-center justify-center rounded-lg border border-dashed border-border bg-muted/40 px-6 text-center">
               <p className="max-w-sm text-sm text-muted-foreground">

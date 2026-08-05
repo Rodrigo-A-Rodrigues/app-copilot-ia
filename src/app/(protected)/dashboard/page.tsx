@@ -92,18 +92,19 @@ export default async function DashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className="border-dashed bg-card/70 shadow-none">
+        <Card className="bg-card/90 shadow-sm transition-shadow hover:shadow-md">
           <CardHeader>
-            <div className="mb-1 inline-flex size-10 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+            <div className="mb-1 inline-flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
               <Workflow className="size-5" />
             </div>
-            <CardTitle>N8N / canais</CardTitle>
+            <CardTitle>Make / canais</CardTitle>
             <CardDescription>
-              Envio por e-mail/WhatsApp e triagem de caixa entram na fase 2.
+              Após gerar no assistente, envie por e-mail ou WhatsApp via
+              webhook do Make.com.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Badge variant="secondary">Em breve</Badge>
+            <Badge variant="secondary">Integrado</Badge>
           </CardContent>
         </Card>
       </section>
