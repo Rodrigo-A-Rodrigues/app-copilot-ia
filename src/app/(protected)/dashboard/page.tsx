@@ -1,5 +1,11 @@
 import Link from "next/link";
-import { ArrowRight, Clock3, Sparkles, UserRound, Workflow } from "lucide-react";
+import {
+  ArrowRight,
+  Clock3,
+  Sparkles,
+  UserRound,
+  Workflow,
+} from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -99,12 +105,17 @@ export default async function DashboardPage() {
             </div>
             <CardTitle>Make / canais</CardTitle>
             <CardDescription>
-              Após gerar no assistente, envie por e-mail ou WhatsApp via
-              webhook do Make.com.
+              Veja o diagrama do fluxo e abra o scenario público no Make.com.
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-3">
             <Badge variant="secondary">Integrado</Badge>
+            <Button asChild variant="outline" className="w-full">
+              <Link href="/make">
+                Ver fluxo
+                <ArrowRight />
+              </Link>
+            </Button>
           </CardContent>
         </Card>
       </section>

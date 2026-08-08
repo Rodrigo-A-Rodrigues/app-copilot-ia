@@ -3,6 +3,8 @@
 Assistente de comunicação interna com IA para o setor de RH.  
 Gera e-mails, mensagens de WhatsApp, avisos institucionais e resumos de reunião a partir de inputs simples (tipo de texto, tópicos e tom de voz), com identidade organizacional — e pode enviar o resultado por e-mail ou WhatsApp via **Make.com**.
 
+Projeto acadêmico idealizado pelo **Centro Universitário UniFECAF**.
+
 ---
 
 ## Proposta do projeto
@@ -26,13 +28,13 @@ Usuário (tipo + tópicos + tom)
 
 ### Stack
 
-| Tecnologia | Papel |
-|---|---|
-| Next.js + TypeScript + Tailwind | Interface e APIs |
+| Tecnologia                        | Papel                         |
+| --------------------------------- | ----------------------------- |
+| Next.js + TypeScript + Tailwind   | Interface e APIs              |
 | shadcn/ui + React Hook Form + Zod | UI e validação de formulários |
-| Supabase | Auth, perfil e histórico |
-| Google Gemini | Geração de textos |
-| Make.com | Orquestração de envios |
+| Supabase                          | Auth, perfil e histórico      |
+| Google Gemini                     | Geração de textos             |
+| Make.com                          | Orquestração de envios        |
 
 Documentação adicional:
 
@@ -71,16 +73,16 @@ cp .env.example .env
 
 Preencha no `.env`:
 
-| Variável | Obrigatório | Descrição |
-|---|---|---|
-| `NEXT_PUBLIC_SUPABASE_URL` | Sim | URL do projeto Supabase |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Sim | Chave anon/publishable |
-| `GEMINI_API_KEY` | Sim* | Chave do Google AI Studio |
-| `LLM_MODEL` | Não | Padrão: `gemini-3.1-flash-lite` |
-| `LLM_BASE_URL` | Não | Padrão Gemini API |
-| `LLM_MOCK` | Não | `true` gera texto local sem chamar Gemini |
-| `MAKE_WEBHOOK_SEND_URL` | Para envio | URL do Webhook do Make |
-| `MAKE_WEBHOOK_SECRET` | Não | Segredo opcional validado no scenario |
+| Variável                        | Obrigatório | Descrição                                 |
+| ------------------------------- | ----------- | ----------------------------------------- |
+| `NEXT_PUBLIC_SUPABASE_URL`      | Sim         | URL do projeto Supabase                   |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Sim         | Chave anon/publishable                    |
+| `GEMINI_API_KEY`                | Sim*        | Chave do Google AI Studio                 |
+| `LLM_MODEL`                     | Não         | Padrão: `gemini-3.1-flash-lite`           |
+| `LLM_BASE_URL`                  | Não         | Padrão Gemini API                         |
+| `LLM_MOCK`                      | Não         | `true` gera texto local sem chamar Gemini |
+| `MAKE_WEBHOOK_SEND_URL`         | Para envio  | URL do Webhook do Make                    |
+| `MAKE_WEBHOOK_SECRET`           | Não         | Segredo opcional validado no scenario     |
 
 \* Sem `GEMINI_API_KEY`, o app usa geração mock (útil só para testar UI).
 
@@ -113,6 +115,9 @@ npm run start
 
 # Lint
 npm run lint
+
+# Formatar código (Prettier)
+npm run format
 ```
 
 ---

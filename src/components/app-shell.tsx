@@ -8,6 +8,7 @@ import {
   LogOut,
   Sparkles,
   UserRound,
+  Workflow,
 } from "lucide-react";
 
 import { ConfirmDialog } from "@/components/confirm-dialog";
@@ -18,6 +19,7 @@ import { cn } from "@/lib/utils";
 const links = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/assistant", label: "Assistente", icon: Sparkles },
+  { href: "/make", label: "Make", icon: Workflow },
   { href: "/perfil", label: "Perfil", icon: UserRound },
 ];
 
@@ -81,7 +83,9 @@ export function AppShell({ children, fullName }: AppShellProps) {
               <p className="text-sm font-medium leading-none">
                 {fullName || "Colaborador"}
               </p>
-              <p className="mt-1 text-xs text-muted-foreground">RH / Comunicação</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                RH / Comunicação
+              </p>
             </div>
             <ConfirmDialog
               open={logoutOpen}

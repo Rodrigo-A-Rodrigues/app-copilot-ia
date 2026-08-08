@@ -71,7 +71,10 @@ export async function POST(request: Request) {
       .single();
 
     if (insertError) {
-      console.error("[generate] falha ao salvar histórico:", insertError.message);
+      console.error(
+        "[generate] falha ao salvar histórico:",
+        insertError.message,
+      );
     }
 
     return NextResponse.json({

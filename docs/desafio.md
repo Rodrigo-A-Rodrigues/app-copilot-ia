@@ -37,14 +37,14 @@ identidade da empresa.
 
 ### Stack escolhida
 
-| Tecnologia | Papel |
-|---|---|
-| **Next.js + TypeScript** | Aplicação web do assistente (UI, fluxos protegidos) |
-| **Supabase** | Autenticação, perfil, histórico de gerações e identidade organizacional |
-| **Google Gemini** | Geração de textos a partir de prompts estruturados |
-| **Make.com** | Orquestração low-code de envios (e-mail / WhatsApp) |
-| **E-mail** | Canal de saída do texto gerado |
-| **WhatsApp** | Canal de saída do texto gerado |
+| Tecnologia               | Papel                                                                   |
+| ------------------------ | ----------------------------------------------------------------------- |
+| **Next.js + TypeScript** | Aplicação web do assistente (UI, fluxos protegidos)                     |
+| **Supabase**             | Autenticação, perfil, histórico de gerações e identidade organizacional |
+| **Google Gemini**        | Geração de textos a partir de prompts estruturados                      |
+| **Make.com**             | Orquestração low-code de envios (e-mail / WhatsApp)                     |
+| **E-mail**               | Canal de saída do texto gerado                                          |
+| **WhatsApp**             | Canal de saída do texto gerado                                          |
 
 ### Fluxo principal (atende o enunciado)
 

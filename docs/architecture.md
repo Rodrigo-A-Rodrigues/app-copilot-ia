@@ -43,26 +43,26 @@ flowchart LR
 
 ## 2. Objetivos arquiteturais
 
-| Objetivo | Como atendemos |
-|---|---|
-| Resolver o enunciado (assistente de escrita) | Fluxo principal centrado em geração com LLM |
-| Manter o protótipo acessível | Next.js + Supabase + Make, sem infraestrutura pesada |
-| Separar núcleo e diferencial | Geração no app; envio/triagem no Make |
-| Identidade organizacional | System prompt + dados de perfil/empresa no Supabase |
-| Segurança básica | Rotas protegidas, auth Supabase, chaves só no servidor |
+| Objetivo                                     | Como atendemos                                         |
+| -------------------------------------------- | ------------------------------------------------------ |
+| Resolver o enunciado (assistente de escrita) | Fluxo principal centrado em geração com LLM            |
+| Manter o protótipo acessível                 | Next.js + Supabase + Make, sem infraestrutura pesada   |
+| Separar núcleo e diferencial                 | Geração no app; envio/triagem no Make                  |
+| Identidade organizacional                    | System prompt + dados de perfil/empresa no Supabase    |
+| Segurança básica                             | Rotas protegidas, auth Supabase, chaves só no servidor |
 
 ---
 
 ## 3. Stack e responsabilidades
 
-| Camada | Tecnologia | Responsabilidade |
-|---|---|---|
-| Frontend | Next.js (App Router) + TypeScript + Tailwind v4 | UI do assistente, dashboard, auth |
-| UI / formulários | shadcn/ui + React Hook Form + Zod | Componentes, validação e estado de forms |
-| Auth / dados | Supabase | Login, sessão, perfil, histórico de gerações |
-| IA | Google Gemini API | Geração de textos via prompts |
-| Orquestração | Make | Webhooks de envio e monitoramento de e-mail |
-| Canais | E-mail + WhatsApp | Entrega do texto ou alerta de triagem |
+| Camada           | Tecnologia                                      | Responsabilidade                             |
+| ---------------- | ----------------------------------------------- | -------------------------------------------- |
+| Frontend         | Next.js (App Router) + TypeScript + Tailwind v4 | UI do assistente, dashboard, auth            |
+| UI / formulários | shadcn/ui + React Hook Form + Zod               | Componentes, validação e estado de forms     |
+| Auth / dados     | Supabase                                        | Login, sessão, perfil, histórico de gerações |
+| IA               | Google Gemini API                               | Geração de textos via prompts                |
+| Orquestração     | Make                                            | Webhooks de envio e monitoramento de e-mail  |
+| Canais           | E-mail + WhatsApp                               | Entrega do texto ou alerta de triagem        |
 
 ---
 
@@ -239,25 +239,25 @@ demo e evolução acadêmica.
 
 ### `profiles`
 
-| Campo | Tipo | Descrição |
-|---|---|---|
-| `id` | uuid (FK auth.users) | Usuário |
-| `full_name` | text | Nome exibido |
-| `company_name` | text | Identidade organizacional |
-| `tone_guidelines` | text | Diretrizes de tom (opcional) |
-| `created_at` | timestamptz | Criação |
+| Campo             | Tipo                 | Descrição                    |
+| ----------------- | -------------------- | ---------------------------- |
+| `id`              | uuid (FK auth.users) | Usuário                      |
+| `full_name`       | text                 | Nome exibido                 |
+| `company_name`    | text                 | Identidade organizacional    |
+| `tone_guidelines` | text                 | Diretrizes de tom (opcional) |
+| `created_at`      | timestamptz          | Criação                      |
 
 ### `generations`
 
-| Campo | Tipo | Descrição |
-|---|---|---|
-| `id` | uuid | Identificador |
-| `user_id` | uuid | Autor |
-| `text_type` | text | email \| whatsapp \| notice \| meeting_summary |
-| `tone` | text | Tom escolhido |
-| `topics` | text | Input do usuário |
-| `result` | text | Texto gerado |
-| `created_at` | timestamptz | Criação |
+| Campo        | Tipo        | Descrição                                      |
+| ------------ | ----------- | ---------------------------------------------- |
+| `id`         | uuid        | Identificador                                  |
+| `user_id`    | uuid        | Autor                                          |
+| `text_type`  | text        | email \| whatsapp \| notice \| meeting_summary |
+| `tone`       | text        | Tom escolhido                                  |
+| `topics`     | text        | Input do usuário                               |
+| `result`     | text        | Texto gerado                                   |
+| `created_at` | timestamptz | Criação                                        |
 
 Políticas RLS: cada usuário lê/escreve apenas seus registros.
 
@@ -265,11 +265,11 @@ Políticas RLS: cada usuário lê/escreve apenas seus registros.
 
 ## 9. APIs internas (alvo)
 
-| Método | Rota | Função |
-|---|---|---|
-| `POST` | `/api/generate` | Gera texto com LLM e persiste histórico |
-| `GET` | `/api/generations` | Lista histórico do usuário |
-| `POST` | `/api/send` | Dispara webhook Make após aprovação |
+| Método | Rota               | Função                                  |
+| ------ | ------------------ | --------------------------------------- |
+| `POST` | `/api/generate`    | Gera texto com LLM e persiste histórico |
+| `GET`  | `/api/generations` | Lista histórico do usuário              |
+| `POST` | `/api/send`        | Dispara webhook Make após aprovação     |
 
 Contratos detalhados podem evoluir junto com a implementação.
 
@@ -307,14 +307,14 @@ Veja também `.env.example`, `docs/make/scenario.md` e o SQL em `docs/supabase/s
 
 ## 12. Fronteiras do MVP vs fase 2
 
-| Incluído no MVP | Fase 2 |
-|---|---|
-| Auth + perfil básico | Multi-empresa / papéis (admin, RH) |
-| Assistente com 4 tipos de texto | Templates avançados e bibliotecas |
-| Histórico de gerações | Analytics de uso |
-| Copiar texto | Fila de aprovação formal |
-| Webhook Make de envio (e-mail/WhatsApp) | Monitor e-mail → resumo → WhatsApp |
-| Prompt versionado em código | Fine-tuning / avaliação automática de qualidade |
+| Incluído no MVP                         | Fase 2                                          |
+| --------------------------------------- | ----------------------------------------------- |
+| Auth + perfil básico                    | Multi-empresa / papéis (admin, RH)              |
+| Assistente com 4 tipos de texto         | Templates avançados e bibliotecas               |
+| Histórico de gerações                   | Analytics de uso                                |
+| Copiar texto                            | Fila de aprovação formal                        |
+| Webhook Make de envio (e-mail/WhatsApp) | Monitor e-mail → resumo → WhatsApp              |
+| Prompt versionado em código             | Fine-tuning / avaliação automática de qualidade |
 
 ---
 

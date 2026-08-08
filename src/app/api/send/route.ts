@@ -1,5 +1,10 @@
 import { NextResponse } from "next/server";
 
+import {
+  buildCorporateEmailHtml,
+  resolveEmailSubject,
+} from "@/lib/email/templates";
+import { parseGeneratedMessage } from "@/lib/email/parse-message";
 import { sendViaMake } from "@/lib/make/send";
 import { createClient } from "@/lib/supabase/server";
 import { sendSchema } from "@/lib/validations/send";
@@ -30,21 +35,40 @@ export async function POST(request: Request) {
       .eq("id", user.id)
       .maybeSingle();
 
+    const companyName = profile?.company_name?.trim() || "Nossa Empresa";
     const recipient =
       parsed.data.channel === "whatsapp"
         ? parsed.data.recipient.replace(/[\s()-]/g, "")
         : parsed.data.recipient;
 
+    const subject = resolveEmailSubject(
+      parsed.data.subject,
+      parsed.data.message,
+      companyName,
+    );
+
+    const { body: plainBody } = parseGeneratedMessage(parsed.data.message);
+
+    const messageHtml =
+      parsed.data.channel === "email"
+        ? buildCorporateEmailHtml({
+            message: parsed.data.message,
+            subject,
+            companyName,
+            textType: parsed.data.textType,
+          })
+        : undefined;
+
     await sendViaMake({
       channel: parsed.data.channel,
       recipient,
-      subject:
-        parsed.data.subject?.trim() ||
-        `Comunicado — ${profile?.company_name?.trim() || "Nossa Empresa"}`,
-      message: parsed.data.message,
+      subject,
+      message:
+        parsed.data.channel === "email" ? plainBody : parsed.data.message,
+      messageHtml,
       textType: parsed.data.textType,
       tone: parsed.data.tone,
-      companyName: profile?.company_name?.trim() || "Nossa Empresa",
+      companyName,
     });
 
     return NextResponse.json({ ok: true });

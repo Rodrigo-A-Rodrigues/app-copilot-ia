@@ -108,7 +108,8 @@ export function SendViaMakeForm({
         <div>
           <p className="text-sm font-medium">Enviar via Make</p>
           <p className="mt-1 text-xs text-muted-foreground">
-            Dispara o scenario do Make.com com a mensagem aprovada.
+            Dispara o scenario do Make.com. E-mails saem em HTML formatado
+            (`messageHtml`); WhatsApp usa texto puro.
           </p>
         </div>
 
@@ -162,9 +163,7 @@ export function SendViaMakeForm({
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="send-subject">
-                  Assunto (e-mail)
-                </FieldLabel>
+                <FieldLabel htmlFor="send-subject">Assunto (e-mail)</FieldLabel>
                 <Input
                   {...field}
                   id="send-subject"

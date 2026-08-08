@@ -119,10 +119,7 @@ export function AssistantForm() {
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
                     <FieldLabel>Tipo de texto</FieldLabel>
-                    <Select
-                      value={field.value}
-                      onValueChange={field.onChange}
-                    >
+                    <Select value={field.value} onValueChange={field.onChange}>
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Selecione o tipo" />
                       </SelectTrigger>
@@ -147,10 +144,7 @@ export function AssistantForm() {
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
                     <FieldLabel>Tom de voz</FieldLabel>
-                    <Select
-                      value={field.value}
-                      onValueChange={field.onChange}
-                    >
+                    <Select value={field.value} onValueChange={field.onChange}>
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Selecione o tom" />
                       </SelectTrigger>
@@ -195,7 +189,11 @@ export function AssistantForm() {
               />
             </FieldGroup>
 
-            <Button type="submit" disabled={loading} className="w-full sm:w-auto">
+            <Button
+              type="submit"
+              disabled={loading}
+              className="w-full sm:w-auto"
+            >
               <Sparkles />
               {loading ? "Gerando..." : "Gerar mensagem"}
             </Button>

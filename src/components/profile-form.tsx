@@ -24,10 +24,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { createClient } from "@/lib/supabase/client";
-import {
-  profileSchema,
-  type ProfileValues,
-} from "@/lib/validations/profile";
+import { profileSchema, type ProfileValues } from "@/lib/validations/profile";
 import type { Profile } from "@/types/domain";
 
 type ProfileFormProps = {
@@ -78,7 +75,9 @@ export function ProfileForm({ profile }: ProfileFormProps) {
 
     setConfirmOpen(false);
     setPendingValues(null);
-    toast.success("Perfil atualizado. As próximas gerações usarão essa identidade.");
+    toast.success(
+      "Perfil atualizado. As próximas gerações usarão essa identidade.",
+    );
   }
 
   return (

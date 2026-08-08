@@ -151,7 +151,10 @@ export function AuthForm({ mode, nextPath = "/dashboard" }: AuthFormProps) {
 
         <p className="text-center text-sm text-muted-foreground">
           Não tem conta?{" "}
-          <Link href="/signup" className="font-medium text-primary hover:underline">
+          <Link
+            href="/signup"
+            className="font-medium text-primary hover:underline"
+          >
             Cadastre-se
           </Link>
         </p>
@@ -241,7 +244,10 @@ export function AuthForm({ mode, nextPath = "/dashboard" }: AuthFormProps) {
 
       <p className="text-center text-sm text-muted-foreground">
         Já tem conta?{" "}
-        <Link href="/signin" className="font-medium text-primary hover:underline">
+        <Link
+          href="/signin"
+          className="font-medium text-primary hover:underline"
+        >
           Entrar
         </Link>
       </p>

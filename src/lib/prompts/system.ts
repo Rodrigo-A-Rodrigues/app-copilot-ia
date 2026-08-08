@@ -30,9 +30,10 @@ export function buildSystemPrompt(identity: PromptIdentity): string {
     "- Escreva em português do Brasil.",
     "- Não invente fatos, datas, nomes ou políticas que não estejam nos tópicos.",
     "- Adapte formato e extensão ao tipo de texto solicitado.",
-    "- Para e-mail: entregue Assunto e Corpo.",
+    "- Para e-mail: entregue primeiro a linha 'Assunto: ...' e, em seguida, o corpo.",
+    "- Separe parágrafos com linha em branco (Enter duplo). Nunca escreva tudo em um único bloco.",
     "- Para WhatsApp: mensagem curta, direta e legível em celular.",
-    "- Para aviso institucional: título + texto principal.",
+    "- Para aviso institucional: título em linha própria + texto principal com parágrafos.",
     "- Para resumo de reunião: bullets dos pontos + parágrafo de próximos passos.",
     "- Não use markdown com cercas de código; use texto simples e títulos claros.",
   ].join("\n");
